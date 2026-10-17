@@ -3,724 +3,271 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f0e0c">
+<meta name="theme-color" content="#000000">
 <title>TAMUR | OPEN THE SAFE</title>
-<meta name="description" content="TAMUR Terakzor — 24-oktabr ochilishi. Seyfning 5 xonali kodini toping.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="TAMUR Terakzor — 24-oktabr, Grand Opening. Seyfning 5 xonali kodini toping.">
+<link rel="preload" href="fonts/cormorant-garamond-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="tamur-logo-mark.png" as="image" crossorigin>
+<link rel="modulepreload" href="vendor/three.module.min.js">
+<link rel="modulepreload" href="js/vault3d.js">
 <style>
-/* ============ TOKENS ============ */
+@font-face{font-family:"Cormorant Garamond";font-weight:500;font-display:swap;src:url(fonts/cormorant-garamond-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-weight:600;font-display:swap;src:url(fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:300;font-display:swap;src:url(fonts/poppins-latin-300-normal.woff2) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:400;font-display:swap;src:url(fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:500;font-display:swap;src:url(fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Poppins";font-weight:600;font-display:swap;src:url(fonts/poppins-latin-600-normal.woff2) format("woff2")}
+
 :root{
-  --bg:#0f0e0c; --bg2:#15120d; --ink:#0a0908;
-  --cream:#ece0cd; --muted:#c7b79f;
-  --gold:#c9ad82; --gold-hi:#f0dcae; --gold-deep:#8a7149;
-  --line:#c8aa7944;
-  --steel-hi:#4a4238; --steel:#2c2821; --steel-lo:#17140f;
-  --r:16px;
-  --safe-area-b:env(safe-area-inset-bottom,0px);
+  --black:#000; --ink:#0b0a09;
+  --champagne:#e6cc9c; --champagne-hi:#f6e8c8; --gold:#c9a66b; --gold-deep:#8d6f42;
+  --beige:#d9cdb8; --muted:#a89c8a;
+  --hair:rgba(230,204,156,.28);
+  --serif:"Cormorant Garamond","Cormorant",Georgia,"Times New Roman",serif;
+  --sans:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --top:env(safe-area-inset-top,0px); --bot:env(safe-area-inset-bottom,0px);
+  --gold-grad:linear-gradient(100deg,#9c7a47 0%,#e6cc9c 22%,#fff1d2 34%,#d4b47c 46%,#a8844e 62%,#ecd6aa 80%,#b8945c 100%);
 }
-*{box-sizing:border-box}
-html,body{margin:0}
-body{
-  color:var(--cream);
-  font-family:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:var(--bg); min-height:100dvh; -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-/* Hero background: darkened storefront */
-body::before{
-  content:""; position:fixed; inset:0; z-index:-2;
-  background:
-    linear-gradient(180deg,#0b0a08f2 0%,#0c0a07d9 42%,#0b0a08f7 100%),
-    url('tamur-store.jpg') center 28%/cover no-repeat;
-}
-body::after{
-  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
-  background:radial-gradient(130% 80% at 50% 30%,#c9ad8216,transparent 60%);
-}
-main{
-  max-width:560px; min-height:100dvh; margin:auto;
-  padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(34px + var(--safe-area-b));
-  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none}
+body{color:var(--beige);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
 
-/* ============ BRAND / TYPO ============ */
-.brand{margin:4px auto 22px}
-.brand img{
-  width:min(230px,56vw); max-height:118px; object-fit:contain;
-  /* black-on-white logo -> clean champagne mark on dark bg */
-  filter:invert(1) sepia(.42) saturate(.9) brightness(1.05) contrast(1.02);
-  mix-blend-mode:screen;
-}
-.kicker{font-size:11.5px; letter-spacing:.32em; color:var(--gold); font-weight:500; text-transform:uppercase}
-h1{
-  font-family:"Poppins",serif; font-weight:700;
-  font-size:clamp(34px,10vw,58px); line-height:1.02; letter-spacing:.01em;
-  margin:14px 0 14px; text-transform:uppercase;
-  background:linear-gradient(180deg,#fbf1df,#d9c19a 60%,#b2946a);
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
-h2{font-weight:600; font-size:clamp(22px,6vw,30px); margin:6px 0 10px; letter-spacing:.02em; color:#f3e7d2}
-p{line-height:1.62; color:var(--muted); font-weight:300; font-size:15px; margin:10px 0}
-p b,p strong{color:var(--cream); font-weight:600}
+/* ---------- stage: storefront photo + WebGL ---------- */
+#stage{position:fixed;inset:0;z-index:0;overflow:hidden}
+#bg{position:absolute;inset:-4%;background:url(tamur-store.jpg) 50% 34%/cover no-repeat;transform:scale(1.35);opacity:0;will-change:transform,opacity,filter}
+#bgShade{position:absolute;inset:0;background:
+  radial-gradient(120% 75% at 50% 45%,rgba(0,0,0,.25) 0%,rgba(0,0,0,.72) 62%,rgba(0,0,0,.94) 100%),
+  linear-gradient(180deg,rgba(0,0,0,.65) 0%,rgba(0,0,0,.35) 30%,rgba(0,0,0,.55) 65%,rgba(0,0,0,.92) 100%)}
+#bgDim{position:absolute;inset:0;background:#000;opacity:0}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+#curtain{position:fixed;inset:0;background:#000;z-index:1;pointer-events:none}
+#scrim{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.72) 55%,rgba(0,0,0,.9))}
 
-/* opening date card */
-.opening{
-  display:inline-flex; flex-direction:column; gap:3px;
-  padding:13px 24px; margin:16px auto 6px;
-  border:1px solid var(--line); border-radius:14px;
-  background:linear-gradient(180deg,#1a160fcc,#120f0bcc); backdrop-filter:blur(4px);
-}
-.opening .loc{font-size:11px; letter-spacing:.28em; color:var(--gold); text-transform:uppercase}
-.opening .date{font-size:20px; font-weight:600; letter-spacing:.05em; color:#f5ead6}
-.opening .sub{font-size:10.5px; letter-spacing:.24em; color:var(--muted); text-transform:uppercase}
+/* ---------- UI layer ---------- */
+#ui{position:fixed;inset:0;z-index:3;pointer-events:none}
+#ui .live{pointer-events:auto}
 
-/* ============ BUTTONS ============ */
-.btn{
-  font:inherit; font-weight:600; letter-spacing:.06em; cursor:pointer;
-  border:0; border-radius:13px; padding:16px 30px; min-height:54px;
-  color:#17120b; background:linear-gradient(180deg,#f3e3c6,#cdb286);
-  box-shadow:0 10px 30px #00000066, inset 0 1px 0 #fff6;
-  transition:transform .14s ease, box-shadow .2s ease, opacity .2s;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn:hover{box-shadow:0 14px 38px #00000080, 0 0 24px #c9ad8240, inset 0 1px 0 #fff6}
-.btn:active{transform:translateY(1px) scale(.98)}
-.btn:disabled{opacity:.55; cursor:wait}
-.btn.ghost{background:transparent; color:var(--cream); border:1px solid var(--line); box-shadow:none}
+/* brand header */
+#brand{position:absolute;left:0;right:0;top:calc(var(--top) + 3.2vh);display:flex;flex-direction:column;align-items:center;gap:1.1vh;will-change:transform}
+.logo-wrap{filter:drop-shadow(0 0 22px rgba(233,200,140,.22))}
+.logo{width:clamp(112px,31vw,170px);aspect-ratio:614/373;
+  -webkit-mask:url(tamur-logo-mark.png) center/contain no-repeat;mask:url(tamur-logo-mark.png) center/contain no-repeat;
+  background:var(--gold-grad);background-size:320% 100%;background-position:100% 0}
+.date{font:500 10.5px/1 var(--sans);letter-spacing:.38em;text-indent:.38em;color:var(--champagne);text-transform:uppercase;white-space:nowrap}
+.place{font:400 9.5px/1 var(--sans);letter-spacing:.42em;text-indent:.42em;color:var(--muted);text-transform:uppercase}
+.rule{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--champagne),transparent);opacity:.7}
 
-/* ============ SAFE (brushed-metal vault) ============ */
-.safe-wrap{margin:18px auto 8px; display:grid; place-items:center}
-.safe{
-  --S:min(260px,74vw);
-  width:var(--S); height:var(--S); position:relative;
-  perspective:1100px;
-}
-.safe.sm{--S:min(210px,62vw)}
-/* outer recessed frame */
-.safe-frame{
-  position:absolute; inset:0; border-radius:26px;
-  background:
-    linear-gradient(145deg,#211d17,#0c0b09);
-  box-shadow:
-    0 26px 60px #000a,
-    inset 0 2px 3px #6b5c4433,
-    inset 0 -6px 14px #000a;
-  padding:12px;
-}
-.safe-door{
-  position:absolute; inset:12px; border-radius:20px;
-  transform-style:preserve-3d; transform-origin:right center;
-  will-change:transform;
-}
-/* steel face */
-.safe-plate{
-  position:absolute; inset:0; border-radius:20px; overflow:hidden;
-  background:
-    radial-gradient(120% 90% at 32% 24%,#4a4237 0%,#2d2821 42%,#1a1712 78%,#121009 100%);
-  box-shadow:
-    inset 0 2px 2px #7d6c4e55,
-    inset 0 -3px 10px #000a,
-    inset 0 0 0 2px #5a4c3633;
-}
-/* brushed texture + ambient glint */
-.safe-plate::before{
-  content:""; position:absolute; inset:0; opacity:.5; mix-blend-mode:overlay;
-  background:repeating-linear-gradient(118deg,#ffffff0e 0 1px,#0000 1px 3px);
-}
-.glint{
-  position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
-  background:linear-gradient(118deg,transparent 38%,#f3e3bd30 48%,transparent 60%);
-  transform:translateX(-30%);
-}
-.safe:not(.reduced) .glint{animation:glint 7s ease-in-out infinite}
-@keyframes glint{0%,70%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+/* intro copy */
+#introUI{position:absolute;left:0;right:0;bottom:calc(var(--bot) + 4.6vh);display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 24px}
+h1{margin:0;font:500 clamp(32px,9.4vw,92px)/.95 var(--serif);letter-spacing:.06em;text-indent:.06em;text-transform:uppercase;white-space:nowrap}
+h1 .ch{display:inline-block;background:var(--gold-grad);background-size:420% 100%;background-position:30% 0;-webkit-background-clip:text;background-clip:text;color:transparent;will-change:transform,opacity,filter}
+h1 .sp{display:inline-block;width:.28em}
+.lead{margin:1.6vh 0 2.8vh;font:300 12.5px/1.7 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.lead b{font-weight:500;color:var(--beige)}
 
-/* rivets around edge (generated by JS) */
-.rivet{
-  position:absolute; width:9px; height:9px; border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#efe0c2,#8a764e 55%,#2c2419);
-  box-shadow:0 1px 2px #000a, inset 0 0 1px #000;
-  transform:translate(-50%,-50%);
-}
+/* premium CTA */
+.cta{position:relative;overflow:hidden;cursor:pointer;border:0;border-radius:999px;padding:0 38px;height:56px;min-width:236px;
+  font:500 12.5px/1 var(--sans);letter-spacing:.32em;text-indent:.32em;color:#1a140b;text-transform:uppercase;
+  background:linear-gradient(180deg,#f4e5c4 0%,#dcc193 48%,#c4a26b 100%);
+  box-shadow:0 18px 40px -12px rgba(201,166,107,.55),0 0 0 1px rgba(255,240,210,.55) inset,0 -2px 0 rgba(120,90,45,.35) inset;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,filter .25s}
+.cta::after{content:"";position:absolute;inset:-2px;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%);transform:translateX(-120%);pointer-events:none}
+.cta.shine::after{animation:shine 1.3s cubic-bezier(.4,0,.2,1)}
+.cta:hover{filter:brightness(1.06)}
+.cta:active{transform:scale(.97)}
+.cta:disabled{cursor:default}
+.cta.loading::after{animation:shine 1.1s linear infinite}
+@keyframes shine{to{transform:translateX(120%)}}
+.cta:focus-visible,.ar:focus-visible,.link:focus-visible{outline:1px solid var(--champagne);outline-offset:4px}
 
-/* locking bolts on the left edge */
-.bolts{position:absolute; left:-2px; top:26%; height:48%; width:16px; display:flex; flex-direction:column; justify-content:space-between; z-index:3}
-.bolts i{
-  display:block; height:11px; width:20px; border-radius:3px;
-  background:linear-gradient(180deg,#d8c094,#8f7749);
-  box-shadow:0 1px 2px #000a, inset 0 1px 0 #fff4;
-  transform:translateX(0); transition:none; will-change:transform;
-}
+/* ---------- game UI ---------- */
+#gameUI{position:absolute;inset:0}
+.ghead{position:absolute;left:0;right:0;top:calc(var(--top) + 3.2vh + clamp(112px,31vw,170px) * .44 + 16px);display:flex;flex-direction:column;align-items:center;gap:12px}
+.kicker{font:500 10.5px/1 var(--sans);letter-spacing:.42em;text-indent:.42em;color:var(--champagne);text-transform:uppercase}
+.pips{display:flex;gap:10px;align-items:center}
+.pip{width:22px;height:3px;border-radius:2px;background:linear-gradient(90deg,#c9a66b,#f3e2bd);box-shadow:0 0 10px rgba(230,204,156,.45);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.pip.used{background:rgba(230,204,156,.16);box-shadow:none;width:14px}
+#controls{position:absolute;inset:0}
+.ar{position:absolute;left:0;top:0;width:var(--aw,50px);height:36px;border-radius:12px;cursor:pointer;display:grid;place-items:center;
+  border:1px solid rgba(230,204,156,.22);background:linear-gradient(180deg,rgba(32,28,23,.62),rgba(12,11,9,.62));
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--champagne);
+  box-shadow:0 8px 20px -10px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,240,210,.08);transition:background .2s,border-color .2s,box-shadow .2s}
+.ar svg{width:16px;height:16px}
+.ar:active,.ar.hit{background:linear-gradient(180deg,rgba(80,64,40,.7),rgba(30,25,18,.7));border-color:rgba(230,204,156,.6);box-shadow:0 0 18px rgba(230,204,156,.25)}
+.zone{position:absolute;left:0;top:0;touch-action:none;cursor:ns-resize}
+.gfoot{position:absolute;left:0;right:0;bottom:calc(var(--bot) + 4.2vh);display:flex;flex-direction:column;align-items:center;gap:14px}
+.hint{font:300 10.5px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
 
-/* central combination dial / spoke handle */
-.dial{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:56%; height:56%; border-radius:50%;
-  display:grid; place-items:center;
-  background:
-    radial-gradient(circle at 50% 50%,#211d17 0%,#17140f 60%,#0e0c09 100%);
-  box-shadow:0 10px 26px #0009, inset 0 0 0 2px #0006, inset 0 2px 6px #000;
-}
-/* knurled gold ring */
-.dial-ring{
-  position:absolute; inset:0; border-radius:50%; padding:7%;
-  background:conic-gradient(from 0deg,#8a7149,#f0dcae,#b2946a,#efe0c0,#8a7149,#e6cfa0,#8a7149,#f0dcae,#8a7149);
-  -webkit-mask:radial-gradient(circle,transparent 60%,#000 61%);
-          mask:radial-gradient(circle,transparent 60%,#000 61%);
-  box-shadow:0 0 10px #0008;
-}
-.dial-ticks{position:absolute; inset:7%; border-radius:50%}
-.dial-ticks i{position:absolute; left:50%; top:50%; width:1.5px; height:7%; background:#f0dcae99; transform-origin:50% 0; border-radius:2px}
-/* inner rotating face with spoke handle */
-.dial-face{
-  position:absolute; width:62%; height:62%; border-radius:50%;
-  display:grid; place-items:center;
-  background:radial-gradient(circle at 42% 38%,#413930,#211d17 70%,#15120d);
-  box-shadow:inset 0 2px 5px #000b, 0 2px 5px #0008;
-  will-change:transform;
-}
-.spoke{position:absolute; left:50%; top:50%; width:84%; height:8px; border-radius:6px;
-  background:linear-gradient(90deg,#8a7149,#efe0c0 50%,#8a7149);
-  box-shadow:0 1px 2px #000a, inset 0 1px 0 #fff5;
-  transform-origin:50% 50%;}
-.dial-hub{position:absolute; width:26%; height:26%; border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,#f3e6c6,#9d8352 60%,#4a3d26);
-  box-shadow:0 2px 5px #000a, inset 0 0 2px #000;}
+/* ---------- phone: glass-metal panel ---------- */
+#phoneUI{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:0 14px calc(var(--bot) + 14px)}
+.panel{position:relative;width:min(440px,100%);padding:30px 24px 24px;border-radius:26px;text-align:center;
+  background:linear-gradient(180deg,rgba(40,35,29,.66),rgba(14,13,11,.78));
+  -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,240,210,.14)}
+.panel::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(160deg,rgba(246,232,200,.75),rgba(201,166,107,.15) 35%,rgba(201,166,107,.08) 65%,rgba(246,232,200,.45));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.panel h2{margin:10px 0 10px;font:500 30px/1.05 var(--serif);letter-spacing:.04em;text-transform:uppercase;
+  background:var(--gold-grad);background-size:300% 100%;background-position:40% 0;-webkit-background-clip:text;background-clip:text;color:transparent}
+.panel p{margin:0 0 20px;font:300 13.5px/1.65 var(--sans);color:var(--beige)}
+.field{width:100%;height:56px;border-radius:16px;border:1px solid rgba(230,204,156,.3);background:rgba(0,0,0,.45);color:#fff;
+  font:400 19px/1 var(--sans);letter-spacing:.08em;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s}
+.field:focus{border-color:var(--champagne);box-shadow:0 0 0 4px rgba(230,204,156,.12)}
+.consent{display:flex;gap:12px;align-items:flex-start;text-align:left;margin:16px 2px 20px;font:300 12px/1.55 var(--sans);color:var(--muted);cursor:pointer}
+.consent input{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:20px;height:20px;margin:0;border-radius:6px;border:1px solid rgba(230,204,156,.5);background:rgba(0,0,0,.4);display:grid;place-items:center;cursor:pointer}
+.consent input:checked{background:linear-gradient(180deg,#f4e5c4,#c4a26b);border-color:transparent}
+.consent input:checked::after{content:"";width:5px;height:10px;border:solid #1a140b;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.panel .cta{width:100%}
+.perr{min-height:18px;margin-top:12px;font:400 12px/1.4 var(--sans);color:#efb98c}
 
-/* scan light sweep during confirm */
-.scan{
-  position:absolute; inset:0; border-radius:20px; pointer-events:none; opacity:0; z-index:4;
-  mix-blend-mode:screen;
-  background:linear-gradient(180deg,transparent 42%,#f3e3bd 50%,transparent 58%);
-  transform:translateY(-120%);
-}
+/* ---------- finale ---------- */
+#finale{position:fixed;inset:0;z-index:4;overflow:hidden;background:#000}
+#vwrap{position:absolute;inset:0;clip-path:circle(0% at 50% 50%);will-change:clip-path}
+#finalVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.14)}
+#finalVideoBg{display:none;position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(38px) brightness(.5) saturate(1.15)}
+#finale .topfade{position:absolute;left:0;right:0;top:0;height:30%;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent)}
+#finale .botfade{position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(0deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.55) 45%,transparent)}
+#finale .fbrand{position:absolute;left:0;right:0;top:calc(var(--top) + 4vh);display:flex;justify-content:center}
+#finale .fbrand .logo{width:clamp(108px,28vw,150px)}
+#finale .fcopy{position:absolute;left:0;right:0;bottom:calc(var(--bot) + 5vh);display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 22px}
+#finale h1{font-size:clamp(54px,16vw,104px);letter-spacing:.04em}
+#finale p{margin:14px 0 0;font:300 14px/1.65 var(--sans);color:#efe6d6;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+#finale p b{font-weight:500;color:var(--champagne-hi)}
+.links{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;justify-content:center}
+.link{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border-radius:999px;text-decoration:none;
+  font:500 11.5px/1 var(--sans);letter-spacing:.24em;color:var(--champagne-hi);text-transform:uppercase;
+  border:1px solid rgba(230,204,156,.45);background:rgba(10,9,8,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:background .25s,border-color .25s,transform .2s}
+.link:hover{background:rgba(60,48,30,.55);border-color:var(--champagne)}
+.link:active{transform:scale(.97)}
+.link svg{width:20px;height:20px;flex:0 0 auto}
+.link.primary{color:#1a140b;border-color:transparent;background:linear-gradient(180deg,#f4e5c4,#c4a26b)}
+#tapSound{position:absolute;left:50%;top:calc(var(--top) + 15vh);transform:translateX(-50%);font:400 10px/1 var(--sans);letter-spacing:.3em;color:var(--champagne);
+  text-transform:uppercase;padding:9px 16px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid var(--hair);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
+#tapSound.show{opacity:.9}
 
-/* ============ NUMBER DRUMS ============ */
-.drums{
-  --cell:66px;
-  display:grid; grid-template-columns:repeat(5,1fr); gap:9px;
-  margin:22px auto 8px; max-width:360px;
-}
-.drum{display:flex; flex-direction:column; align-items:center; gap:8px}
-.drum .arrow{
-  width:100%; max-width:60px; height:40px; min-height:40px; padding:0;
-  border:1px solid var(--line); border-radius:10px;
-  background:linear-gradient(180deg,#241f18,#17130e); color:var(--gold);
-  font-size:15px; line-height:1; cursor:pointer; -webkit-tap-highlight-color:transparent;
-  transition:transform .12s, background .2s, border-color .2s;
-}
-.drum .arrow:active{transform:scale(.92); background:#2e271d}
-.window{
-  position:relative; width:100%; max-width:60px; height:var(--cell); overflow:hidden;
-  border-radius:12px; perspective:220px;
-  background:linear-gradient(180deg,#0c0b08,#1b1710 50%,#0c0b08);
-  box-shadow:
-    inset 0 10px 14px #000c, inset 0 -10px 14px #000c,
-    inset 0 0 0 1px #5a4c3655, 0 2px 8px #0008;
-}
-/* curvature + center highlight */
-.window::before{
-  content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
-  background:
-    linear-gradient(180deg,#000c 0%,#0000 26%,#0000 74%,#000c 100%);
-}
-.window::after{
-  content:""; position:absolute; left:0; right:0; top:50%; height:2px; z-index:2;
-  transform:translateY(-50%); pointer-events:none;
-  background:linear-gradient(90deg,transparent,#f0dcae66,transparent);
-}
-.strip{position:absolute; left:0; right:0; top:0; will-change:transform; transform:translateY(calc(var(--cell) * -1))}
-.strip b{
-  display:grid; place-items:center; height:var(--cell);
-  font-weight:600; font-size:34px; color:#f3e7cf;
-  text-shadow:0 1px 2px #000b;
-  font-variant-numeric:tabular-nums;
-}
-.window.spin .strip{animation:whir .5s linear}
-@keyframes whir{from{transform:translateY(calc(var(--cell) * -1))}to{transform:translateY(calc(var(--cell) * -11))}}
+/* ---------- transitions & misc ---------- */
+#flash{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 34% 50%,#fffaf0 0%,#f6e3bb 26%,#d8b57c 55%,#8c6a3c 82%,#2a1f10 100%)}
+#notice{position:fixed;left:50%;bottom:calc(var(--bot) + 18px);z-index:8;transform:translate(-50%,20px);max-width:min(92vw,420px);
+  padding:12px 18px;border-radius:14px;background:rgba(20,17,13,.9);border:1px solid var(--hair);font:400 12.5px/1.45 var(--sans);color:var(--beige);
+  opacity:0;transition:opacity .35s,transform .35s;pointer-events:none;text-align:center}
+#notice.show{opacity:1;transform:translate(-50%,0)}
+#testTag{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));top:calc(var(--top) + 12px);z-index:7;font:500 8.5px/1 var(--sans);letter-spacing:.3em;
+  color:rgba(230,204,156,.7);border:1px solid rgba(230,204,156,.22);padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.35)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-.hint{font-size:12.5px; letter-spacing:.06em; color:var(--muted); margin:6px 0 2px}
-.hint b{color:var(--gold)}
-
-/* processing state on game screen */
-#game .fade-on-process{transition:opacity .4s, filter .4s}
-#game.processing .fade-on-process{opacity:.2; filter:blur(1.5px); pointer-events:none}
-/* keep the vault lit and make it the focal point during the sequence */
-#safeGameWrap{transition:transform .55s cubic-bezier(.33,1,.68,1), filter .55s}
-#game.processing #safeGameWrap{transform:scale(1.08); filter:drop-shadow(0 16px 40px #c9ad8233)}
-.proc-cap{
-  min-height:20px; margin-top:10px; font-size:12px; letter-spacing:.22em; color:var(--gold);
-  text-transform:uppercase; opacity:0; transition:opacity .3s;
+/* ---------- wide screens: editorial split (copy left, vault right) ---------- */
+@media (min-aspect-ratio:23/20) and (min-width:760px){
+  #brand{left:6.5vw;right:auto;top:calc(var(--top) + 6vh);align-items:flex-start}
+  .logo{width:clamp(130px,11vw,180px)}
+  .date,.place{text-indent:0}
+  .rule{background:linear-gradient(90deg,var(--champagne),transparent)}
+  #introUI{left:6.5vw;right:auto;top:50%;bottom:auto;transform:translateY(-38%);align-items:flex-start;text-align:left;padding:0;max-width:44vw}
+  h1{font-size:clamp(64px,7.2vw,124px);text-indent:0;line-height:.92}
+  h1 .line{display:block}
+  #title > .sp{display:none}
+  .lead{font-size:12.5px;margin:3.2vh 0 4.4vh}
+  .ghead{left:6.5vw;right:auto;top:auto;bottom:calc(50% + 40px);align-items:flex-start}
+  .ghead .kicker{text-indent:0}
+  .gfoot{left:6.5vw;right:auto;top:calc(50% - 10px);bottom:auto;align-items:flex-start}
+  .gtitle{display:block!important}
+  #phoneUI{align-items:center;justify-content:flex-start;padding-left:6.5vw}
+  #finale .fcopy{bottom:calc(var(--bot) + 7vh)}
+  /* portrait film on landscape screens: framed in the centre over a blurred copy of itself */
+  #finalVideoBg{display:block}
+  #finalVideo{object-fit:contain;filter:drop-shadow(0 30px 80px rgba(0,0,0,.6))}
 }
-#game.processing .proc-cap{opacity:1}
-
-/* ============ PANELS / FORM ============ */
-.panel{
-  width:100%; background:linear-gradient(180deg,#19150fe8,#120f0be8);
-  border:1px solid var(--line); border-radius:18px; padding:22px 18px; margin:18px 0;
-  backdrop-filter:blur(6px);
-}
-.field{
-  width:100%; font:inherit; font-size:17px; letter-spacing:.04em; text-align:center;
-  padding:15px; border:1px solid var(--line); border-radius:12px;
-  background:#0a0a08; color:#fff; margin-top:4px;
-}
-.field:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px #c9ad8225}
-.consent{display:flex; gap:11px; align-items:flex-start; text-align:left; font-size:12.5px; color:var(--muted); margin:16px 2px 18px; cursor:pointer}
-.consent input{width:20px; height:20px; flex:0 0 auto; accent-color:var(--gold); margin-top:1px}
-.status{min-height:22px; margin:6px 0 0; color:#f0c49a; font-size:13px}
-
-/* ============ LINKS (final) ============ */
-.links{display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:24px}
-.links a{
-  display:inline-flex; align-items:center; gap:9px; text-decoration:none; font-weight:600; letter-spacing:.04em;
-  color:#17120b; background:linear-gradient(180deg,#f3e3c6,#cdb286); border-radius:12px; padding:14px 20px;
-  box-shadow:0 8px 24px #00000055; -webkit-tap-highlight-color:transparent;
-}
-.links a:active{transform:translateY(1px)}
-.links a svg{width:20px; height:20px}
-
-/* final video bg */
-#finalVideo{position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:-3; opacity:0; transition:opacity 1.1s ease}
-#done.active #finalVideo{opacity:.9}
-#done::after{content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:linear-gradient(180deg,#0b0a0899,#0b0a0855 45%,#0b0a08cc)}
-.tap-unmute{
-  position:fixed; left:50%; bottom:calc(16px + var(--safe-area-b)); transform:translateX(-50%);
-  font-size:11px; letter-spacing:.18em; color:var(--gold); text-transform:uppercase;
-  background:#0b0a08b0; border:1px solid var(--line); border-radius:999px; padding:8px 16px;
-  opacity:0; transition:opacity .4s; pointer-events:none; z-index:6;
-}
-.tap-unmute.show{opacity:.85}
-
-/* ============ SCREEN MGMT ============ */
-section{width:100%; animation:rise .5s ease}
-section[hidden]{display:none!important}
-@keyframes rise{from{opacity:0; transform:translateY(16px)}to{opacity:1; transform:translateY(0)}}
-
-/* ============ REDUCED MOTION ============ */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important}
-}
-
-/* ============ SMALL SCREENS ============ */
-@media(max-width:380px){
-  .drums{--cell:58px; gap:7px}
-  .drum .arrow{height:36px; min-height:36px}
-  .strip b{font-size:29px}
-}
-@media(max-height:680px){
-  .safe{--S:min(190px,52vw)}
-  main{justify-content:flex-start}
-}
+.gtitle{display:none;margin:0 0 6px;font:500 clamp(40px,4.4vw,64px)/1 var(--serif);letter-spacing:.05em;text-transform:uppercase;
+  background:var(--gold-grad);background-size:300% 100%;background-position:40% 0;-webkit-background-clip:text;background-clip:text;color:transparent}
+@media (max-height:620px){ .lead{margin:1vh 0 1.8vh} .cta{height:50px} }
+@media (prefers-reduced-motion:reduce){ .cta::after{display:none} }
 </style>
 </head>
 <body>
 
-<main>
-  <!-- ========== INTRO ========== -->
-  <section id="intro">
-    <div class="brand"><img src="tamur-logo.jpg" alt="TAMUR" width="230" height="118" fetchpriority="high"></div>
-    <div class="kicker">Yangi manzil · Yangi bosqich</div>
-    <h1>Open the Safe</h1>
-    <div class="opening">
-      <span class="loc">TAMUR · Terakzor</span>
-      <span class="date">24-OKTABR — OCHILISH</span>
-      <span class="sub">Sizni kutamiz</span>
+<div id="stage" aria-hidden="true">
+  <div id="bg"></div>
+  <div id="bgShade"></div>
+  <div id="bgDim"></div>
+  <canvas id="gl"></canvas>
+  <div id="grain"></div>
+</div>
+<div id="curtain"></div>
+<div id="scrim"></div>
+
+<div id="ui">
+  <header id="brand">
+    <div class="logo-wrap" id="logoWrap"><div class="logo" id="logo" role="img" aria-label="TAMUR"></div></div>
+    <div class="rule" id="rule"></div>
+    <div class="date" id="date">24 October — Grand Opening</div>
+    <div class="place" id="place">TAMUR · Terakzor</div>
+  </header>
+
+  <section id="introUI">
+    <h1 id="title" aria-label="Open the Safe"><span class="line">Open the</span> <span class="line">Safe</span></h1>
+    <p class="lead" id="lead"><b>5 xonali</b> kod · <b>3 ta</b> imkoniyat</p>
+    <button class="cta live" id="startBtn">Ishtirok etish</button>
+  </section>
+
+  <section id="gameUI" hidden>
+    <div class="ghead" id="ghead">
+      <div class="kicker">Kodni tering</div>
+      <div class="pips" id="pips" aria-label="Qolgan urinishlar"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
+      <span class="sr" id="pipsText" aria-live="polite"></span>
     </div>
-    <div class="safe-wrap"><div class="safe" id="safeIntro" aria-hidden="true"></div></div>
-    <p>Sirli seyfning <b>5 xonali</b> kodini topishga harakat qiling.<br>Sizda atigi <b>3 ta imkoniyat</b> bor.</p>
-    <button class="btn" id="startBtn">ISHTIROK ETISH →</button>
-    <p class="status" id="introNotice" role="status"></p>
-  </section>
-
-  <!-- ========== GAME ========== -->
-  <section id="game" hidden>
-    <div class="kicker fade-on-process">TAMUR · Open the Safe</div>
-    <div class="safe-wrap" id="safeGameWrap"><div class="safe sm" id="safeGame" aria-hidden="true"></div></div>
-    <h2 class="fade-on-process">Seyf kodi</h2>
-    <p class="fade-on-process" style="margin-top:2px">Har bir g‘ildirakni aylantiring va kodni tasdiqlang.</p>
-    <div class="drums fade-on-process" id="drums"></div>
-    <p class="hint fade-on-process" id="remaining"></p>
-    <button class="btn fade-on-process" id="sendBtn">KODNI TASDIQLASH</button>
-    <p class="proc-cap" id="procCap">Kod tekshirilmoqda</p>
-    <p class="status fade-on-process" id="gameNotice" role="status"></p>
-  </section>
-
-  <!-- ========== PHONE ========== -->
-  <section id="phone" hidden>
-    <div class="kicker">Birinchi urinish</div>
-    <h2>Urinishingiz qabul qilindi</h2>
-    <div class="panel">
-      <p style="margin-top:0">Agar kiritgan kodingiz to‘g‘ri bo‘lsa, siz bilan bog‘lanishimiz uchun telefon raqamingizni to‘g‘ri qoldiring.</p>
-      <input id="tel" class="field" type="tel" inputmode="numeric" autocomplete="tel"
-             placeholder="+998 90 123 45 67" maxlength="19" aria-label="Telefon raqami">
-      <label class="consent">
-        <input id="consent" type="checkbox">
-        <span>Telefon raqamimni sovrin natijasi bo‘yicha bog‘lanish uchun saqlashga roziman.</span>
-      </label>
-      <button class="btn" id="phoneBtn" style="width:100%">RAQAMNI SAQLASH →</button>
-      <p class="status" id="phoneNotice" role="status"></p>
-    </div>
-    <button class="btn ghost" id="phoneSkip" style="font-size:12px;padding:10px 18px;min-height:0">Keyinroq kiritaman</button>
-  </section>
-
-  <!-- ========== DONE ========== -->
-  <section id="done" hidden>
-    <video id="finalVideo" loop playsinline preload="none" poster="tamur-store.jpg"></video>
-    <div class="brand"><img src="tamur-logo.jpg" alt="TAMUR" width="230" height="118"></div>
-    <div class="kicker">TAMUR · 24-oktabr</div>
-    <h1>Rahmat!</h1>
-    <p>Urinishlaringiz qabul qilindi.<br>Natijalar <b>24-oktabrda</b> e’lon qilinadi.</p>
-    <div class="links">
-      <a id="instagram" href="https://www.instagram.com/tamur_terakzor/" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2.5" y="2.5" width="19" height="19" rx="5.4"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.15" fill="currentColor" stroke="none"/>
-        </svg>INSTAGRAM</a>
-      <a id="map" href="https://maps.app.goo.gl/CimVDXb1XPi7Q7X59" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 21.5s7-6.1 7-11.2A7 7 0 0 0 5 10.3c0 5.1 7 11.2 7 11.2Z"/><circle cx="12" cy="10.2" r="2.7"/>
-        </svg>MANZIL</a>
+    <div id="controls"></div>
+    <div class="gfoot" id="gfoot">
+      <h2 class="gtitle">Seyf kodi</h2>
+      <button class="cta live" id="sendBtn">Kodni tasdiqlash</button>
+      <div class="hint" id="hint">Aylantiring yoki suring</div>
     </div>
   </section>
-</main>
 
-<div class="tap-unmute" id="tapUnmute">Ovoz uchun bosing</div>
+  <section id="phoneUI" hidden>
+    <div class="panel live" id="panel" role="dialog" aria-labelledby="phoneTitle">
+      <div class="kicker">Birinchi urinish</div>
+      <h2 id="phoneTitle">Urinishingiz qabul qilindi</h2>
+      <p>Agar kiritgan kodingiz to‘g‘ri bo‘lsa, siz bilan bog‘lanishimiz uchun telefon raqamingizni to‘g‘ri qoldiring.</p>
+      <input class="field" id="tel" type="tel" inputmode="numeric" autocomplete="tel" placeholder="+998 __ ___ __ __" maxlength="17" aria-label="Telefon raqami">
+      <label class="consent"><input type="checkbox" id="consent"><span>Telefon raqamimni sovrin natijasi bo‘yicha bog‘lanish uchun saqlashga roziman.</span></label>
+      <button class="cta" id="phoneBtn">Tasdiqlash</button>
+      <div class="perr" id="perr" role="status"></div>
+    </div>
+  </section>
+</div>
 
-<script>
-(function(){
-"use strict";
-const API='https://eahpfrvevrwyoqkpysqp.supabase.co/functions/v1/safe-api';
-const $=id=>document.getElementById(id);
-const reduced=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+<section id="finale" hidden>
+  <div id="vwrap"><video id="finalVideoBg" muted loop playsinline preload="none" aria-hidden="true"></video><video id="finalVideo" loop playsinline preload="none" poster="tamur-store.jpg"></video></div>
+  <div class="topfade"></div><div class="botfade"></div>
+  <div class="fbrand" id="fbrand"><div class="logo-wrap"><div class="logo" role="img" aria-label="TAMUR"></div></div></div>
+  <div id="tapSound">Ovoz uchun ekranga teging</div>
+  <div class="fcopy">
+    <h1 id="thanks" aria-label="Rahmat!">Rahmat!</h1>
+    <p id="fline1">Urinishlaringiz qabul qilindi.</p>
+    <p id="fline2" style="margin-top:2px">Natijalar <b>24-oktabrda</b> e’lon qilinadi.</p>
+    <div class="links" id="links">
+      <a class="link primary" id="instagram" href="https://www.instagram.com/tamur_terakzor/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1C2.6 9.9 2.6 10.3 2.6 12s0 2.1.1 3.3c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4C15.5 4 15.1 4 12 4zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.2-8.3a1.15 1.15 0 1 1-2.3 0 1.15 1.15 0 0 1 2.3 0z"/></svg>
+        Instagram</a>
+      <a class="link" id="map" href="https://maps.app.goo.gl/CimVDXb1XPi7Q7X59" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.8a7.7 7.7 0 0 0-7.7 7.7c0 5.6 6.8 12.1 7.1 12.4a.85.85 0 0 0 1.2 0c.3-.3 7.1-6.8 7.1-12.4A7.7 7.7 0 0 0 12 1.8zm0 18.3c-1.9-2-5.9-6.7-5.9-10.6a5.9 5.9 0 1 1 11.8 0c0 3.9-4 8.6-5.9 10.6zM12 6.2a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6zm0 4.9a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z"/></svg>
+        Manzil</a>
+    </div>
+  </div>
+</section>
 
-/* ---------- device id ---------- */
-let id;
-try{ id=localStorage.getItem('tamur_device'); if(!id){ id=(crypto.randomUUID&&crypto.randomUUID())||('d'+Date.now()+Math.random().toString(16).slice(2)); localStorage.setItem('tamur_device',id);} }
-catch(e){ id='d'+Date.now()+Math.random().toString(16).slice(2); }
+<div id="flash"></div>
+<div id="notice" role="status" aria-live="polite"></div>
+<div id="testTag" hidden>Test rejimi</div>
 
-/* ---------- UTM capture (persist first-touch) ---------- */
-const utm=(function(){
-  let saved={};
-  try{ saved=JSON.parse(localStorage.getItem('tamur_utm')||'{}'); }catch(e){}
-  const q=new URLSearchParams(location.search); let got=false; const keys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
-  keys.forEach(k=>{ const v=q.get(k); if(v){ saved[k]=v; got=true; } });
-  if(got){ try{ localStorage.setItem('tamur_utm',JSON.stringify(saved)); }catch(e){} }
-  return saved;
-})();
-
-/* ---------- state ---------- */
-let count=0, d=[0,0,0,0,0], busy=false, testMode=false, started=false;
-
-/* ---------- analytics (fire-and-forget, never blocks UX) ---------- */
-function track(name){
-  try{
-    fetch(API,{method:'POST',headers:{'content-type':'application/json'},
-      body:JSON.stringify({action:'event',deviceId:id,name:name,utm:utm,ref:document.referrer||''}),
-      keepalive:true}).catch(()=>{});
-  }catch(e){}
-}
-
-/* ---------- server call ---------- */
-async function call(action,extra){
-  const ctrl=new AbortController();
-  const t=setTimeout(()=>ctrl.abort(),12000);
-  try{
-    // keep the core contract identical to the backend's expectation (action, deviceId, +extra)
-    const r=await fetch(API,{method:'POST',headers:{'content-type':'application/json'},
-      body:JSON.stringify(Object.assign({action,deviceId:id},extra||{})),signal:ctrl.signal});
-    const j=await r.json().catch(()=>({}));
-    if(j&&j.testMode){ testMode=true; return j; }
-    if(!r.ok) throw new Error(j&&j.error==='Game not activated yet'
-        ? 'O‘yin hali faollashtirilmagan. Iltimos, keyinroq urinib ko‘ring.'
-        : (j&&j.error)||'Server xatosi. Qayta urinib ko‘ring.');
-    return j||{};
-  } finally { clearTimeout(t); }
-}
-
-/* ================= SAFE RENDERING ================= */
-function buildSafe(el){
-  if(reduced) el.classList.add('reduced');
-  el.innerHTML=
-    '<div class="safe-frame"><div class="safe-door">'+
-    '<div class="safe-plate"><div class="glint"></div>'+
-      '<div class="bolts">'+'<i></i>'.repeat(4)+'</div>'+
-      '<div class="dial">'+
-        '<div class="dial-ring"></div>'+
-        '<div class="dial-ticks"></div>'+
-        '<div class="dial-face">'+
-          '<span class="spoke" style="transform:translate(-50%,-50%) rotate(0deg)"></span>'+
-          '<span class="spoke" style="transform:translate(-50%,-50%) rotate(60deg)"></span>'+
-          '<span class="spoke" style="transform:translate(-50%,-50%) rotate(120deg)"></span>'+
-          '<div class="dial-hub"></div>'+
-        '</div>'+
-      '</div>'+
-      '<div class="scan"></div>'+
-    '</div></div></div>';
-  // rivets around the plate perimeter
-  const plate=el.querySelector('.safe-plate');
-  const N=16;
-  for(let i=0;i<N;i++){
-    const r=document.createElement('span'); r.className='rivet';
-    const a=(i/N)*Math.PI*2, R=44; // percent radius-ish on a rounded square
-    const x=50+Math.cos(a)*R, y=50+Math.sin(a)*R;
-    // clamp toward edges for a framed look
-    r.style.left=Math.max(6,Math.min(94,x))+'%';
-    r.style.top=Math.max(6,Math.min(94,y))+'%';
-    plate.appendChild(r);
-  }
-  // dial ticks
-  const ticks=el.querySelector('.dial-ticks');
-  for(let i=0;i<24;i++){
-    const t=document.createElement('i');
-    t.style.transform='translate(-50%,-50%) rotate('+(i*15)+'deg) translateY(-'+(50-3)+'%)';
-    ticks.appendChild(t);
-  }
-}
-
-/* cinematic confirm sequence on the game safe (identical for all users) */
-function runSafeSequence(){
-  const el=$('safeGame');
-  const face=el.querySelector('.dial-face');
-  const bolts=el.querySelectorAll('.bolts i');
-  const scan=el.querySelector('.scan');
-  const plate=el.querySelector('.safe-plate');
-  $('game').classList.add('processing');
-
-  if(reduced){
-    return new Promise(r=>setTimeout(()=>{ $('game').classList.remove('processing'); r(); },650));
-  }
-
-  const ease='cubic-bezier(.33,1,.68,1)';
-  // 1) whir the drums
-  spinDrums();
-  // 2) dial handle turns (with a settle)
-  face.animate(
-    [{transform:'rotate(0deg)'},{transform:'rotate(-160deg)',offset:.55},{transform:'rotate(-135deg)'}],
-    {duration:1500,easing:ease,fill:'forwards'});
-  // 3) locking bolts retract inward, staggered
-  bolts.forEach((b,i)=>b.animate(
-    [{transform:'translateX(0)'},{transform:'translateX(14px)'}],
-    {duration:420,delay:780+i*70,easing:'cubic-bezier(.5,.1,.3,1)',fill:'forwards'}));
-  // 4) scan light sweep
-  scan.animate(
-    [{opacity:0,transform:'translateY(-120%)'},{opacity:.9,offset:.5},{opacity:0,transform:'translateY(120%)'}],
-    {duration:900,delay:950,easing:'ease-in-out'});
-  // 5) gold glint bloom on the plate
-  plate.animate(
-    [{boxShadow:'inset 0 2px 2px #7d6c4e55,inset 0 -3px 10px #000a,inset 0 0 0 2px #5a4c3633'},
-     {boxShadow:'inset 0 2px 2px #7d6c4e55,inset 0 -3px 10px #000a,inset 0 0 26px #f0dcae88',offset:.6},
-     {boxShadow:'inset 0 2px 2px #7d6c4e55,inset 0 -3px 10px #000a,inset 0 0 0 2px #5a4c3633'}],
-    {duration:1000,delay:1500,easing:'ease-in-out'});
-
-  return new Promise(resolve=>setTimeout(()=>{
-    $('game').classList.remove('processing');
-    // reset mechanism for a possible next attempt
-    face.getAnimations().forEach(a=>a.cancel());
-    face.style.transform='';
-    bolts.forEach(b=>{b.getAnimations().forEach(a=>a.cancel()); b.style.transform='';});
-    resolve();
-  },2250));
-}
-
-/* ================= NUMBER DRUMS ================= */
-function cellStrip(center){ // returns [prev,cur,next]
-  return [((center+9)%10),center,((center+1)%10)];
-}
-function renderDrums(){
-  const wrap=$('drums'); wrap.innerHTML='';
-  d.forEach((n,i)=>{
-    const col=document.createElement('div'); col.className='drum';
-    col.innerHTML=
-      '<button class="arrow" data-i="'+i+'" data-dir="1" aria-label="Raqamni oshirish">▲</button>'+
-      '<div class="window"><div class="strip">'+cellStrip(n).map(x=>'<b>'+x+'</b>').join('')+'</div></div>'+
-      '<button class="arrow" data-i="'+i+'" data-dir="-1" aria-label="Raqamni kamaytirish">▼</button>';
-    wrap.appendChild(col);
-  });
-  updateRemaining();
-}
-function updateRemaining(){ $('remaining').innerHTML='Qolgan urinishlar: <b>'+Math.max(0,3-count)+'</b>'; }
-
-let rolling=[false,false,false,false,false];
-function change(i,dir){
-  if(rolling[i]||busy) return;
-  rolling[i]=true;
-  const win=$('drums').children[i].querySelector('.window');
-  const strip=win.querySelector('.strip');
-  const cur=d[i];
-  const next=((cur+dir)+10)%10;
-  // rebuild strip [prev,cur,next] centered on current, then roll one cell
-  const cs=getComputedStyle(win); const cell=parseFloat(cs.height);
-  strip.style.transition='none';
-  strip.innerHTML=cellStrip(cur).map(x=>'<b>'+x+'</b>').join('');
-  strip.style.transform='translateY('+(-cell)+'px)'; // middle cell in window
-  // force reflow then animate
-  void strip.offsetHeight;
-  strip.style.transition='transform .34s cubic-bezier(.3,1.2,.5,1)';
-  strip.style.transform='translateY('+(dir>0?-2*cell:0)+'px)';
-  const done=()=>{
-    strip.removeEventListener('transitionend',done);
-    d[i]=next;
-    strip.style.transition='none';
-    strip.innerHTML=cellStrip(next).map(x=>'<b>'+x+'</b>').join('');
-    strip.style.transform='translateY('+(-cell)+'px)';
-    rolling[i]=false;
-  };
-  strip.addEventListener('transitionend',done);
-  // safety fallback if transitionend doesn't fire
-  setTimeout(()=>{ if(rolling[i]) done(); },500);
-}
-function spinDrums(){
-  if(reduced) return;
-  Array.from($('drums').children).forEach((col,k)=>{
-    const win=col.querySelector('.window');
-    const strip=win.querySelector('.strip');
-    const saved=strip.innerHTML;
-    const cur=d[k];
-    // long rolling sequence (two full turns, landing back on current digit)
-    const seq=[];
-    for(let r=0;r<2;r++) for(let n=0;n<10;n++) seq.push((cur+n)%10);
-    seq.push(cur);
-    setTimeout(()=>{
-      strip.innerHTML=seq.map(x=>'<b>'+x+'</b>').join('');
-      strip.style.transition='none';
-      strip.style.transform='translateY(calc(var(--cell) * -1))';
-      void strip.offsetHeight;
-      win.classList.add('spin');
-      setTimeout(()=>{
-        win.classList.remove('spin');
-        strip.style.transition='none';
-        strip.innerHTML=saved;          // restore [prev,cur,next]
-        strip.style.transform='';       // back to CSS default (centered on current)
-      },500);
-    },k*45);
-  });
-}
-
-/* ================= SCREENS ================= */
-function show(name){
-  ['intro','game','phone','done'].forEach(k=>{ const s=$(k); s.hidden=k!==name; s.classList.toggle('active',k===name); });
-  if(name==='done') enterDone();
-}
-
-/* ================= DONE: video + audio ================= */
-let videoReady=false;
-function enterDone(){
-  const v=$('finalVideo');
-  if(!videoReady){ v.src='TAMUR_video_GitHub.mp4'; v.preload='auto'; v.load(); videoReady=true; }
-  v.muted=false; v.volume=.7;
-  const p=v.play();
-  if(p&&p.catch) p.catch(()=>{
-    // autoplay with sound blocked -> play muted, offer one-tap unmute
-    v.muted=true; v.play().catch(()=>{});
-    const tip=$('tapUnmute'); tip.classList.add('show');
-    const unmute=()=>{ v.muted=false; v.play().catch(()=>{}); tip.classList.remove('show');
-      document.removeEventListener('pointerdown',unmute); document.removeEventListener('keydown',unmute); };
-    document.addEventListener('pointerdown',unmute,{once:true});
-    document.addEventListener('keydown',unmute,{once:true});
-    setTimeout(()=>tip.classList.remove('show'),6000);
-  });
-}
-
-/* ================= FLOW ================= */
-async function start(){
-  if(started) return; started=true;
-  $('startBtn').disabled=true;
-  track('participation_start'); track('opening_cta_click');
-  // warm the final video element for later autoplay-with-sound (user gesture)
-  try{ const v=$('finalVideo'); v.src='TAMUR_video_GitHub.mp4'; v.load(); videoReady=true; v.play().then(()=>v.pause()).catch(()=>{}); }catch(e){}
-  try{
-    const res=await call('start');
-    count=testMode?0:(res.attempts||0);
-    renderDrums();
-    show(testMode?'game':(res.needsPhone?'phone':res.finished?'done':'game'));
-  }catch(e){
-    started=false; $('startBtn').disabled=false;
-    $('introNotice').textContent=e.name==='AbortError'?'Server javobi kechikdi. Qayta urinib ko‘ring.':e.message;
-  }
-}
-
-async function attempt(){
-  if(busy||rolling.some(Boolean)) return;
-  busy=true; $('sendBtn').disabled=true;
-  track('code_attempt');
-
-  if(testMode){
-    await runSafeSequence();
-    count++; updateRemaining();
-    $('gameNotice').textContent='Test rejimi: urinish bazaga saqlanmadi.';
-    if(count===1) show('phone');
-    else if(count>=3){ track('attempts_exhausted'); show('done'); }
-    busy=false; $('sendBtn').disabled=false; return;
-  }
-
-  try{
-    // run the server check and the animation together; both must finish
-    const [res]=await Promise.all([ call('attempt',{code:d.join('')}), runSafeSequence() ]);
-    count=(typeof res.attempts==='number')?res.attempts:count+1;
-    updateRemaining();
-    if(res.finished||count>=3) track('attempts_exhausted');
-    show(res.needsPhone?'phone':res.finished?'done':'game');
-  }catch(e){
-    $('game').classList.remove('processing');
-    $('gameNotice').textContent=e.name==='AbortError'?'Server javobi kechikdi. Qayta urinib ko‘ring.':e.message;
-  }finally{ busy=false; $('sendBtn').disabled=false; }
-}
-
-async function savePhone(){
-  if(testMode){ show(count>=3?'done':'game'); return; }
-  let p=$('tel').value.replace(/\D/g,'');
-  if(p.startsWith('998')) p=p.slice(3);
-  if(p.length!==9){ $('phoneNotice').textContent='Telefon raqamini to‘liq kiriting (9 ta raqam).'; return; }
-  if(!$('consent').checked){ $('phoneNotice').textContent='Davom etish uchun rozilik belgisini qo‘ying.'; return; }
-  $('phoneBtn').disabled=true;
-  try{
-    const res=await call('phone',{phone:'+998'+p});
-    show(res.finished?'done':'game');
-  }catch(e){ $('phoneNotice').textContent=e.message; }
-  finally{ $('phoneBtn').disabled=false; }
-}
-
-/* phone input live formatting: +998 XX XXX XX XX */
-function formatPhone(v){
-  let p=v.replace(/\D/g,'');
-  if(p.startsWith('998')) p=p.slice(3);
-  p=p.slice(0,9);
-  let out='+998';
-  if(p.length>0) out+=' '+p.slice(0,2);
-  if(p.length>2) out+=' '+p.slice(2,5);
-  if(p.length>5) out+=' '+p.slice(5,7);
-  if(p.length>7) out+=' '+p.slice(7,9);
-  return out;
-}
-
-/* ================= INIT ================= */
-function init(){
-  buildSafe($('safeIntro'));
-  buildSafe($('safeGame'));
-  track('landing_view');
-
-  $('startBtn').addEventListener('click',start);
-  $('sendBtn').addEventListener('click',attempt);
-  $('phoneBtn').addEventListener('click',savePhone);
-  $('phoneSkip').addEventListener('click',()=>show(count>=3?'done':'game'));
-  $('instagram').addEventListener('click',()=>track('instagram_click'));
-  $('map').addEventListener('click',()=>track('map_click'));
-
-  $('drums').addEventListener('click',e=>{
-    const b=e.target.closest('.arrow'); if(!b) return;
-    change(parseInt(b.dataset.i,10), parseInt(b.dataset.dir,10));
-  });
-  const tel=$('tel');
-  tel.addEventListener('input',()=>{ const pos=tel.selectionStart; tel.value=formatPhone(tel.value);
-    // keep caret at end for simplicity
-    tel.selectionStart=tel.selectionEnd=tel.value.length; });
-  tel.addEventListener('focus',()=>{ if(!tel.value) tel.value='+998 '; });
-}
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
-})();
-</script>
+<script src="vendor/gsap.min.js"></script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>
