@@ -1,0 +1,28 @@
+name: live-check
+on:
+  push:
+    branches: [live-check]
+    paths: [ci/**, .github/workflows/live-check.yml]
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright (uses the runner's Google Chrome)
+        run: cd ci && npm init -y >/dev/null && npm i playwright@1.56.1
+      - name: Check live site and Supabase (test mode only)
+        run: node ci/live-check.mjs
+      - name: Save results to the branch
+        if: always()
+        run: |
+          git config user.name "live-check bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add results
+          git commit -m "live-check results ${GITHUB_RUN_ID}" || exit 0
+          git push origin HEAD:live-check
