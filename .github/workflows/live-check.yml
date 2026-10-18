@@ -2,7 +2,7 @@ name: live-check
 on:
   push:
     branches: [live-check]
-    paths: [ci/**, .github/workflows/live-check.yml]
+    paths: [ci/live-check.mjs, .github/workflows/live-check.yml]
 permissions:
   contents: write
 jobs:
