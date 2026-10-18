@@ -12,8 +12,15 @@ const R = s => { appendFileSync(REPORT, s + '\n'); console.log(s); };
 
 /* ---------- 1. deployment + assets ---------- */
 R('## 1. Render deployment');
-const res = await fetch(SITE, { headers: { 'accept-encoding': 'gzip, br' } });
-const html = await res.text();
+// wait for Render to publish the latest main (the new attempts counter has id="anum")
+let res, html = '';
+for (let k = 0; k < 40; k++) {
+  res = await fetch(SITE + '/?v=' + Date.now(), { headers: { 'accept-encoding': 'gzip, br', 'cache-control': 'no-cache' } });
+  html = await res.text();
+  if (html.includes('id="anum"')) break;
+  await new Promise(r => setTimeout(r, 15000));
+}
+R(`- Latest build (attempts counter) is live: **${html.includes('id="anum"') ? 'YES' : 'NO'}**`);
 R(`- GET / → **${res.status}**, server: ${res.headers.get('server')}, encoding: ${res.headers.get('content-encoding') || 'none'}`);
 R(`- Deployed build is the 3D version (references js/app.js): **${html.includes('js/app.js') ? 'YES' : 'NO'}**`);
 const assets = ['js/app.js', 'js/vault3d.js', 'js/sfx.js', 'vendor/three.module.min.js', 'vendor/gsap.min.js', 'vendor/RoomEnvironment.js',
@@ -69,7 +76,7 @@ async function flow(tag, viewport, mobile) {
   await page.waitForTimeout(1500); await shot('02-intro');
   await page.click('#startBtn');
   const gameOk = await until(() => !document.getElementById('gameUI').hidden && !document.getElementById('sendBtn').disabled);
-  R(`- game screen ready: ${gameOk}; test tag visible: ${await ev(() => !document.getElementById('testTag').hidden)}`);
+  R(`- game screen ready: ${gameOk}; test tag visible: ${await ev(() => !document.getElementById('testTag').hidden)}; attempts counter: "${await ev(() => document.getElementById('attempts').innerText.replace(/\s+/g, ' '))}"`);
   await page.waitForTimeout(2000); await shot('03-game');
   const target = [1, 0, 2, 4, 8];
   for (let i = 0; i < 5; i++) {
