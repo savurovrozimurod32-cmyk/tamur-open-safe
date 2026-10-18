@@ -15,6 +15,7 @@ const DIAL_Y = 0.36, SLOT_Y = -0.8, SLOT_W = 1.78, SLOT_H = 0.27;
 const DRUM_R = 0.26, DRUM_L = 0.25, DRUM_GAP = 0.32;
 const DRUM_Z = -0.205, DRUM_Z_HIDDEN = -0.33;   // front of an active drum sits just proud of the panel
 const HINGE_X = DOOR_W / 2 + 0.01;
+const GLOW = 0.45, GLOW_ACTIVE = 1.0;   // digits are always softly lit so they stay legible
 
 /* ---------- helpers ---------- */
 function makeCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return [c, c.getContext('2d')]; }
@@ -82,28 +83,28 @@ function radialTexture(stops) {
 function digitTextures() {
   // u (canvas x) runs around the drum, v (canvas y) runs along it. Digit k sits at u = -k/10,
   // glyphs rotated 90° so they read upright once the drum's axis is horizontal.
-  const W = 1024, H = 256, slot = W / 10;
+  const W = 2048, H = 512, slot = W / 10, k2 = 2;
   const [c, g] = makeCanvas(W, H), [e, ge] = makeCanvas(W, H);
   const base = g.createLinearGradient(0, 0, 0, H);
-  base.addColorStop(0, '#2c2926'); base.addColorStop(0.5, '#1c1a18'); base.addColorStop(1, '#2c2926');
+  base.addColorStop(0, '#1d1b19'); base.addColorStop(0.5, '#121110'); base.addColorStop(1, '#1d1b19');
   g.fillStyle = base; g.fillRect(0, 0, W, H);
   for (let i = 0; i < 900; i++) {
-    const v = (30 + Math.random() * 30) | 0; g.fillStyle = `rgba(${v + 10},${v + 6},${v},.35)`;
-    g.fillRect(Math.random() * W, Math.random() * H, 20 + Math.random() * 120, 1);
+    const v = (22 + Math.random() * 18) | 0; g.fillStyle = `rgba(${v + 8},${v + 5},${v},.4)`;
+    g.fillRect(Math.random() * W, Math.random() * H, 40 + Math.random() * 240, 2);
   }
   ge.fillStyle = '#000'; ge.fillRect(0, 0, W, H);
   // gold rims at both ends of the drum
-  g.fillStyle = '#c2a06a'; g.fillRect(0, 0, W, 9); g.fillRect(0, H - 9, W, 9);
-  g.fillStyle = 'rgba(0,0,0,.45)'; g.fillRect(0, 9, W, 2); g.fillRect(0, H - 11, W, 2);
-  const font = '500 84px Poppins, "Helvetica Neue", Arial, sans-serif';
+  g.fillStyle = '#d2b07a'; g.fillRect(0, 0, W, 9 * k2); g.fillRect(0, H - 9 * k2, W, 9 * k2);
+  g.fillStyle = 'rgba(0,0,0,.5)'; g.fillRect(0, 9 * k2, W, 2 * k2); g.fillRect(0, H - 11 * k2, W, 2 * k2);
+  const font = '600 172px Poppins, "Helvetica Neue", Arial, sans-serif';
   const sx = (H / DRUM_L) / (W / (TAU * DRUM_R));   // keep true glyph proportions on the cylinder
   for (let k = 0; k < 10; k++) {
     const u0 = ((10 - k) % 10) * slot;
     for (const u of [u0, u0 + W]) {
       // engraved separators between digits
-      g.fillStyle = 'rgba(0,0,0,.5)'; g.fillRect(u - slot / 2 - 1, 22, 2, H - 44);
-      g.fillStyle = 'rgba(214,185,140,.18)'; g.fillRect(u - slot / 2 + 1, 22, 1, H - 44);
-      for (const [ctx, col] of [[g, '#e8c992'], [ge, '#ffffff']]) {
+      g.fillStyle = 'rgba(0,0,0,.6)'; g.fillRect(u - slot / 2 - 2, 22 * k2, 4, H - 44 * k2);
+      g.fillStyle = 'rgba(214,185,140,.22)'; g.fillRect(u - slot / 2 + 2, 22 * k2, 2, H - 44 * k2);
+      for (const [ctx, col] of [[g, '#fbe9c4'], [ge, '#ffffff']]) {
         ctx.save(); ctx.translate(u, H / 2); ctx.rotate(Math.PI / 2); ctx.scale(sx, 1);
         ctx.font = font; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = col;
         const m = ctx.measureText(String(k));
@@ -113,7 +114,7 @@ function digitTextures() {
     }
   }
   const map = new THREE.CanvasTexture(c), emap = new THREE.CanvasTexture(e);
-  for (const t of [map, emap]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; }
+  for (const t of [map, emap]) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 16; }
   return { map, emap };
 }
 function logoTextures(img) {
@@ -140,7 +141,7 @@ export async function createVault(canvas, opts = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   if (!renderer.getContext()) throw new Error('webgl');
   const mobile = Math.min(window.innerWidth, window.innerHeight) < 700;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.75 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 2.5 : 2));   // crisp digits on phone screens
   renderer.setClearColor(0x000000, 0);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
@@ -156,7 +157,7 @@ export async function createVault(canvas, opts = {}) {
   const tanH = Math.tan(camera.fov * DEG / 2);
 
   /* ---------- fonts & logo for textures ---------- */
-  try { await document.fonts.load('500 96px Poppins'); } catch (e) { /* fallback font is fine */ }
+  try { await document.fonts.load('600 172px Poppins'); } catch (e) { /* fallback font is fine */ }
   const logoImg = await new Promise(res => {
     const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => res(im); im.onerror = () => res(null); im.src = opts.logoSrc || 'tamur-logo-mark.png';
   });
@@ -356,8 +357,8 @@ export async function createVault(canvas, opts = {}) {
   const capMat = goldBrushed;
   for (let i = 0; i < 5; i++) {
     const mat = new THREE.MeshPhysicalMaterial({
-      map: digitMap, emissiveMap: digitEmap, emissive: 0xffc27a, emissiveIntensity: 0,
-      metalness: 0.35, roughness: 0.4, clearcoat: 0.8, clearcoatRoughness: 0.1,
+      map: digitMap, emissiveMap: digitEmap, emissive: 0xffd9a0, emissiveIntensity: GLOW,
+      metalness: 0.05, roughness: 0.78, clearcoat: 0.08, clearcoatRoughness: 0.5, envMapIntensity: 0.28,
     });
     const roll = new THREE.Group(); roll.position.set((i - 2) * DRUM_GAP, SLOT_Y, DRUM_Z_HIDDEN); face.add(roll);
     const mesh = new THREE.Mesh(new THREE.CylinderGeometry(DRUM_R, DRUM_R, DRUM_L, 72, 1), [mat, capMat, capMat]);
@@ -451,8 +452,8 @@ export async function createVault(canvas, opts = {}) {
     if (perfN < 45) return;
     const avg = perfSum / perfN; perfN = 0; perfSum = 0;
     const pr = renderer.getPixelRatio();
-    if (avg > 0.022 && pr > 1) {
-      renderer.setPixelRatio(Math.max(1, pr - 0.25)); W = 0; resize();
+    if (avg > 0.022 && pr > 1.5) {
+      renderer.setPixelRatio(Math.max(1.5, pr - 0.25)); W = 0; resize();
     }
   }
   function loop() {
@@ -493,7 +494,7 @@ export async function createVault(canvas, opts = {}) {
   let active = -1;
   function setActive(i) {
     if (i === active) return; active = i;
-    drums.forEach((d, k) => gsap.to(d.mat, { emissiveIntensity: k === i ? 0.55 : 0.0, duration: 0.35, ease: 'power2.out' }));
+    drums.forEach((d, k) => gsap.to(d.mat, { emissiveIntensity: k === i ? GLOW_ACTIVE : GLOW, duration: 0.35, ease: 'power2.out' }));
   }
 
   const proj = new THREE.Vector3();
@@ -556,7 +557,7 @@ export async function createVault(canvas, opts = {}) {
         tl.to(d.roll.position, { z: DRUM_Z, duration: 0.42 * Dm, ease: 'back.out(1.6)' }, at);
         tl.to(d.roll.rotation, { x: 0, duration: 0.5 * Dm, ease: 'power3.out' }, at);
         tl.add(() => { S('tick'); haptic(8); }, at + 0.12);
-        tl.fromTo(d.mat, { emissiveIntensity: 0.9 }, { emissiveIntensity: 0, duration: 0.6 * Dm, ease: 'power2.out' }, at + 0.1);
+        tl.fromTo(d.mat, { emissiveIntensity: 1.4 }, { emissiveIntensity: GLOW, duration: 0.6 * Dm, ease: 'power2.out' }, at + 0.1);
       });
       return tl;
     },
@@ -607,7 +608,7 @@ export async function createVault(canvas, opts = {}) {
         const at = i * 0.09;
         tl.to(d.roll.position, { z: DRUM_Z - 0.035, duration: 0.12 * Dm, ease: 'power2.in' }, at)
           .to(d.roll.position, { z: DRUM_Z - 0.012, duration: 0.18 * Dm, ease: 'back.out(2)' }, at + 0.12)
-          .fromTo(d.mat, { emissiveIntensity: 1.1 }, { emissiveIntensity: 0.25, duration: 0.5 * Dm }, at + 0.1)
+          .fromTo(d.mat, { emissiveIntensity: 1.6 }, { emissiveIntensity: GLOW, duration: 0.5 * Dm }, at + 0.1)
           .add(() => { S('seat', i); haptic(10); }, at + 0.12);
       });
       // 0.5 – 1.2: gears turn, camera closes on the lock
@@ -630,7 +631,7 @@ export async function createVault(canvas, opts = {}) {
       faceBolts.forEach(b => tl.to(b.rod.position, { x: b.x0, duration: 0.4, ease: 'power3.inOut' }, 0.1));
       edgeBolts.forEach(b => tl.to(b.position, { x: -DOOR_W / 2 - 0.1, duration: 0.4 }, 0.1));
       drums.forEach(d => tl.to(d.roll.position, { z: DRUM_Z, duration: 0.3 }, 0.1));
-      tl.to(drums.map(d => d.mat), { emissiveIntensity: 0, duration: 0.4 }, 0);
+      tl.to(drums.map(d => d.mat), { emissiveIntensity: GLOW, duration: 0.4 }, 0);
       fadeWord(tl, 0, 0.3);
       camTo(tl, 'game', 0.8, 'power2.inOut', 0);
       return tl;
@@ -660,7 +661,7 @@ export async function createVault(canvas, opts = {}) {
       glowSprite.material.opacity = 0; glowSprite.scale.set(0.1, 0.1, 1);
       faceBolts.forEach(b => { b.rod.position.x = b.x0; });
       edgeBolts.forEach(b => { b.position.x = -DOOR_W / 2 - 0.1; });
-      drums.forEach(d => { d.roll.position.z = DRUM_Z; d.mat.emissiveIntensity = 0; });
+      drums.forEach(d => { d.roll.position.z = DRUM_Z; d.mat.emissiveIntensity = GLOW; });
       if (wordPlate) wordPlate.material.opacity = 0;
       dial.rotation.z = Math.round(dial.rotation.z / (Math.PI / 2)) * (Math.PI / 2);
       const f = framing(state); f.dist *= 1.12; Object.assign(rig, f); stateName = state;

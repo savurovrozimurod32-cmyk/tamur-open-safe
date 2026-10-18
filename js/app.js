@@ -200,10 +200,10 @@ function renderPips(animate) {
   const used = Math.min(3, count);
   [...$('pips').children].forEach((p, k) => {
     const isUsed = k >= 3 - used;
-    if (animate && isUsed && !p.classList.contains('used')) gsap.fromTo(p, { scaleX: 1.6 }, { scaleX: 1, duration: 0.8, ease: 'elastic.out(1,.5)' });
+    if (animate && isUsed && !p.classList.contains('used')) gsap.fromTo(p, { scale: 1.8 }, { scale: 1, duration: 0.8, ease: 'elastic.out(1,.5)' });
     p.classList.toggle('used', isUsed);
   });
-  $('pipsText').textContent = `Qolgan urinishlar: ${3 - used}`;
+  $('anum').textContent = String(3 - used);
 }
 
 /* split the headline into animatable glyphs */
@@ -319,7 +319,7 @@ async function onStart() {
      .to(['#rule', '#date', '#place'], { opacity: 0, duration: 0.4 }, 0)
      .to('#bgDim', { opacity: 0.62, duration: 1.2 }, 0)
      .set('#introUI', { display: 'none' }, 0.6)
-     .to('#brand', { scale: 0.72, transformOrigin: wide() ? '0% 0%' : '50% 0%', duration: 0.9, ease: 'power3.inOut' }, 0.1);
+     .to('#brand', { scale: 0.8, transformOrigin: wide() ? '0% 0%' : '50% 0%', duration: 0.9, ease: 'power3.inOut' }, 0.1);
 
   if (!testMode && res.finished) { await out; await toFinale(); busy = false; return; }
   phase = 'activating';

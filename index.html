@@ -27,7 +27,7 @@
   --serif:"Cormorant Garamond","Cormorant",Georgia,"Times New Roman",serif;
   --sans:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
   --top:env(safe-area-inset-top,0px); --bot:env(safe-area-inset-bottom,0px);
-  --gold-grad:linear-gradient(100deg,#9c7a47 0%,#e6cc9c 22%,#fff1d2 34%,#d4b47c 46%,#a8844e 62%,#ecd6aa 80%,#b8945c 100%);
+  --gold-grad:linear-gradient(100deg,#d1ae74 0%,#f2dcae 22%,#fff8e6 34%,#ecd09c 46%,#d6b47a 62%,#f6e5c0 80%,#d8b77f 100%);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none}
@@ -55,7 +55,7 @@ button{font:inherit;color:inherit}
 
 /* brand header */
 #brand{position:absolute;left:0;right:0;top:calc(var(--top) + 3.2vh);display:flex;flex-direction:column;align-items:center;gap:1.1vh;will-change:transform}
-.logo-wrap{filter:drop-shadow(0 0 22px rgba(233,200,140,.22))}
+.logo-wrap{filter:drop-shadow(0 0 1px rgba(255,240,210,.5)) drop-shadow(0 0 22px rgba(233,200,140,.3))}
 .logo{width:clamp(112px,31vw,170px);aspect-ratio:614/373;
   -webkit-mask:url(tamur-logo-mark.png) center/contain no-repeat;mask:url(tamur-logo-mark.png) center/contain no-repeat;
   background:var(--gold-grad);background-size:320% 100%;background-position:100% 0}
@@ -88,11 +88,15 @@ h1 .sp{display:inline-block;width:.28em}
 
 /* ---------- game UI ---------- */
 #gameUI{position:absolute;inset:0}
-.ghead{position:absolute;left:0;right:0;top:calc(var(--top) + 3.2vh + clamp(112px,31vw,170px) * .44 + 16px);display:flex;flex-direction:column;align-items:center;gap:12px}
+.ghead{position:absolute;left:0;right:0;top:calc(var(--top) + 3.2vh + clamp(112px,31vw,170px) * .49 + 14px);display:flex;flex-direction:column;align-items:center;gap:12px}
 .kicker{font:500 10.5px/1 var(--sans);letter-spacing:.42em;text-indent:.42em;color:var(--champagne);text-transform:uppercase}
-.pips{display:flex;gap:10px;align-items:center}
-.pip{width:22px;height:3px;border-radius:2px;background:linear-gradient(90deg,#c9a66b,#f3e2bd);box-shadow:0 0 10px rgba(230,204,156,.45);transition:all .6s cubic-bezier(.2,.8,.2,1)}
-.pip.used{background:rgba(230,204,156,.16);box-shadow:none;width:14px}
+.attempts{display:flex;align-items:center;gap:12px;padding:9px 16px;border-radius:999px;border:1px solid rgba(230,204,156,.35);background:rgba(10,9,8,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.alabel{font:500 10.5px/1 var(--sans);letter-spacing:.22em;color:var(--champagne-hi);text-transform:uppercase}
+.anum{font:500 13px/1 var(--sans);color:var(--muted);letter-spacing:.06em}
+.anum b{font:600 19px/1 var(--sans);color:#fff3d8;margin-right:1px}
+.pips{display:flex;gap:6px;align-items:center}
+.pip{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3d6,#e2c08a 55%,#b48d55);box-shadow:0 0 10px rgba(240,215,170,.6);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+.pip.used{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(230,204,156,.45)}
 #controls{position:absolute;inset:0}
 .ar{position:absolute;left:0;top:0;width:var(--aw,50px);height:36px;border-radius:12px;cursor:pointer;display:grid;place-items:center;
   border:1px solid rgba(230,204,156,.22);background:linear-gradient(180deg,rgba(32,28,23,.62),rgba(12,11,9,.62));
@@ -219,14 +223,16 @@ h1 .sp{display:inline-block;width:.28em}
   <section id="gameUI" hidden>
     <div class="ghead" id="ghead">
       <div class="kicker">Kodni tering</div>
-      <div class="pips" id="pips" aria-label="Qolgan urinishlar"><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
-      <span class="sr" id="pipsText" aria-live="polite"></span>
     </div>
     <div id="controls"></div>
     <div class="gfoot" id="gfoot">
       <h2 class="gtitle">Seyf kodi</h2>
       <button class="cta live" id="sendBtn">Kodni tasdiqlash</button>
-      <div class="hint" id="hint">Aylantiring yoki suring</div>
+      <div class="attempts" id="attempts" aria-live="polite">
+        <span class="alabel">Qolgan urinishlar</span>
+        <span class="pips" id="pips" aria-hidden="true"><span class="pip"></span><span class="pip"></span><span class="pip"></span></span>
+        <span class="anum"><b id="anum">3</b>/3</span>
+      </div>
     </div>
   </section>
 
