@@ -17,10 +17,10 @@ let res, html = '';
 for (let k = 0; k < 40; k++) {
   res = await fetch(SITE + '/?v=' + Date.now(), { headers: { 'accept-encoding': 'gzip, br', 'cache-control': 'no-cache' } });
   html = await res.text();
-  if (html.includes('id="anum"')) break;
+  if (html.includes('id="promo"')) break;
   await new Promise(r => setTimeout(r, 15000));
 }
-R(`- Latest build (attempts counter) is live: **${html.includes('id="anum"') ? 'YES' : 'NO'}**`);
+R(`- Latest build (promo scene) is live: **${html.includes('id="promo"') ? 'YES' : 'NO'}**`);
 R(`- GET / → **${res.status}**, server: ${res.headers.get('server')}, encoding: ${res.headers.get('content-encoding') || 'none'}`);
 R(`- Deployed build is the 3D version (references js/app.js): **${html.includes('js/app.js') ? 'YES' : 'NO'}**`);
 const assets = ['js/app.js', 'js/vault3d.js', 'js/sfx.js', 'vendor/three.module.min.js', 'vendor/gsap.min.js', 'vendor/RoomEnvironment.js',
@@ -93,6 +93,16 @@ async function flow(tag, viewport, mobile) {
   await page.waitForTimeout(1500); await shot('06-phone');
   await page.fill('#tel', '901234567'); await page.click('.consent');
   await page.click('#phoneBtn');
+  const promoOk = await until(() => !document.getElementById('promo').hidden);
+  await until(() => +getComputedStyle(document.querySelector('#pAct > *')).opacity > 0.95, 30);
+  await page.waitForTimeout(1000); await shot('06b-promo');
+  const promo = await ev(() => { const v = document.getElementById('promoVideo'); return {
+    title: document.getElementById('promoTitle').textContent.replace(/\s+/g, ' ').trim(),
+    left: document.getElementById('pLeft').innerText.replace(/\s+/g, ' ').trim(),
+    msg: document.getElementById('pMsg').textContent.replace(/\s+/g, ' ').trim(),
+    insta: document.getElementById('pInsta').href, video: { paused: v.paused, muted: v.muted, w: v.videoWidth, h: v.videoHeight } }; });
+  R(`- promo scene after phone: ${promoOk} — ${JSON.stringify(promo)}`);
+  await page.click('#pNext');
   const g2 = await until(() => !document.getElementById('gameUI').hidden && !document.getElementById('sendBtn').disabled);
   await page.click('#sendBtn');
   const g3 = await until(() => !document.getElementById('gameUI').hidden && !document.getElementById('sendBtn').disabled);
