@@ -122,12 +122,25 @@ const chevron = up => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
       const b = document.createElement('button');
       b.className = 'ar live'; b.innerHTML = chevron(dir > 0);
       b.setAttribute('aria-label', `${i + 1}-raqamni ${dir > 0 ? 'oshirish' : 'kamaytirish'}`);
-      b.addEventListener('click', () => stepDrum(i, dir, b));
+      // react on touch-down (no click delay, no double-tap zoom); click only for keyboard activation
+      b.addEventListener('pointerdown', e => { e.preventDefault(); stepDrum(i, dir, b); });
+      b.addEventListener('click', e => { if (e.detail === 0) stepDrum(i, dir, b); });
       host.appendChild(b); (dir > 0 ? ctrl.ups : ctrl.downs).push(b);
     }
     bindSwipe(z, i);
   }
+  // in the code-entry area the browser must never treat fast taps as a zoom gesture
+  host.addEventListener('touchend', e => e.preventDefault(), { passive: false });
+  host.addEventListener('dblclick', e => e.preventDefault());
 })();
+// iOS Safari ignores user-scalable=no: block pinch / double-tap zoom gestures explicitly
+let lastTouchEnd = 0;
+document.addEventListener('touchend', e => {
+  const now = Date.now();
+  if (now - lastTouchEnd < 320 && !e.target.closest('input, textarea, a')) e.preventDefault();
+  lastTouchEnd = now;
+}, { passive: false });
+['gesturestart', 'gesturechange'].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 function placeControls() {
   if (!ctrl.visible || !vault) return;
   const pts = vault.drumScreen();
