@@ -1,0 +1,29 @@
+name: supabase-check
+on:
+  push:
+    branches: [live-check]
+    paths: [ci/supabase/**, .github/workflows/supabase-check.yml]
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Read-only Supabase audit (encrypted output)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: bash ci/supabase/check.sh
+      - name: Save encrypted results
+        if: always()
+        run: |
+          rm -rf work
+          git config user.name "supabase-check bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add results-supabase
+          git commit -m "supabase-check results ${GITHUB_RUN_ID}" || exit 0
+          git push origin HEAD:live-check
