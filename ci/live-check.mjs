@@ -17,10 +17,10 @@ let res, html = '';
 for (let k = 0; k < 40; k++) {
   res = await fetch(SITE + '/?v=' + Date.now(), { headers: { 'accept-encoding': 'gzip, br', 'cache-control': 'no-cache' } });
   html = await res.text();
-  if (html.includes('exln=MW12NGtkMm9qbXAwbw==')) break;
+  if (html.includes('user-scalable=no')) break;
   await new Promise(r => setTimeout(r, 15000));
 }
-R(`- Latest build (new Instagram link) is live: **${html.includes('exln=MW12NGtkMm9qbXAwbw==') ? 'YES' : 'NO'}**`);
+R(`- Latest build (zoom lock) is live: **${html.includes('user-scalable=no') ? 'YES' : 'NO'}**`);
 R(`- GET / → **${res.status}**, server: ${res.headers.get('server')}, encoding: ${res.headers.get('content-encoding') || 'none'}`);
 R(`- Deployed build is the 3D version (references js/app.js): **${html.includes('js/app.js') ? 'YES' : 'NO'}**`);
 const assets = ['js/app.js', 'js/vault3d.js', 'js/sfx.js', 'vendor/three.module.min.js', 'vendor/gsap.min.js', 'vendor/RoomEnvironment.js',
