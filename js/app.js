@@ -212,11 +212,14 @@ function splitGlyphs(el) {
   const walk = node => {
     [...node.childNodes].forEach(n => {
       if (n.nodeType === 3) {
+        // glyphs are grouped per word so a line can only break between words
         const frag = document.createDocumentFragment();
-        [...n.textContent].forEach(ch => {
-          const s = document.createElement('span');
-          if (ch === ' ') { s.className = 'sp'; s.innerHTML = '&nbsp;'; } else { s.className = 'ch'; s.textContent = ch; out.push(s); }
-          s.setAttribute('aria-hidden', 'true'); frag.appendChild(s);
+        n.textContent.split(/( )/).forEach(part => {
+          if (!part) return;
+          if (part === ' ') { const sp = document.createElement('span'); sp.className = 'sp'; sp.innerHTML = '&nbsp;'; sp.setAttribute('aria-hidden', 'true'); frag.appendChild(sp); return; }
+          const wd = document.createElement('span'); wd.className = 'wd'; wd.setAttribute('aria-hidden', 'true');
+          [...part].forEach(ch => { const c = document.createElement('span'); c.className = 'ch'; c.textContent = ch; wd.appendChild(c); out.push(c); });
+          frag.appendChild(wd);
         });
         n.replaceWith(frag);
       } else walk(n);
@@ -406,11 +409,91 @@ async function onPhone() {
     .to('#scrim', { opacity: 0, duration: 0.8 }, 0.2);
   $('phoneUI').hidden = true;
   if (!testMode && res.finished) { await toFinale(); busy = false; return; }
+  await showPromo();
   vault.sweepLight();
   await vault.settle('game');
   await showGameUI();
   busy = false;
 }
+
+/* =================================================================
+   PROMO: cinematic video scene after the first attempt + phone
+   ================================================================= */
+const ORDINAL = ['', 'Birinchi', 'Ikkinchi', 'Uchinchi'];
+let promoChars = [], promoWords = [];
+function splitWords(el) {
+  const out = [];
+  [...el.childNodes].forEach(n => {
+    const text = n.textContent, cls = n.nodeType === 1 ? n.className : '';
+    const frag = document.createDocumentFragment();
+    text.split(/(\s+)/).forEach(part => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+      const w = document.createElement('span'); w.className = 'w' + (cls ? ' ' + cls : ''); w.textContent = part;
+      frag.appendChild(w); out.push(w);
+    });
+    n.replaceWith(frag);
+  });
+  return out;
+}
+function preparePromo() {
+  const ord = ORDINAL[Math.min(3, Math.max(1, count))] || 'Birinchi';
+  const t = $('promoTitle');
+  t.setAttribute('aria-label', `${ord} urinish qabul qilindi!`);
+  t.innerHTML = `<span class="line">${ord} urinish</span> <span class="line">qabul qilindi!</span>`;
+  promoChars = splitGlyphs(t);
+  if (!promoWords.length) promoWords = splitWords($('pMsg'));
+  $('pLeftNum').textContent = String(Math.max(0, 3 - count));
+}
+function showPromo() {
+  return new Promise(resolve => {
+    phase = 'promo';
+    preparePromo();
+    const v = $('promoVideo'); warmVideo();
+    if (!v.getAttribute('src')) { v.src = 'TAMUR_video_GitHub.mp4'; v.preload = 'auto'; }
+    $('promo').hidden = false;
+    gsap.set('#promo', { opacity: 0 });
+    gsap.set(['.pcopy', '#pBrand'], { clearProps: 'transform,filter' });
+    gsap.set(['#pBrand', '#pKicker', '#pLeft', '#pMsg', '#pAct > *'], { opacity: 0 });
+    gsap.set('.pcopy', { opacity: 1 });
+    gsap.set(promoChars, { opacity: 0, y: 46, filter: 'blur(14px)' });
+    gsap.set(promoWords, { opacity: 0, y: 14, filter: 'blur(6px)' });
+    gsap.set('#pRule', { scaleX: 0 });
+    playWithSound(v, 'promoTap', 'promoVideoBg');
+    sfx.chime();
+
+    const tl = gsap.timeline();
+    tl.to('#promo', { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0)
+      .add(() => { if (vault) vault.pause(); $('stage').style.visibility = 'hidden'; }, 0.9)
+      .fromTo('#promoVideo', { scale: 1.16 }, { scale: 1, duration: 7, ease: 'power2.out' }, 0)
+      .fromTo('#pBrand', { y: -14 }, { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.35)
+      .fromTo('#pKicker', { letterSpacing: '.7em' }, { opacity: 1, letterSpacing: '.42em', duration: 1.2, ease: 'power3.out' }, 0.5)
+      .to(promoChars, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, stagger: 0.035, ease: 'power3.out' }, 0.7)
+      .to(promoChars, { backgroundPosition: '90% 0', duration: 2.2, stagger: 0.025, ease: 'power2.inOut' }, 1.2)
+      .fromTo('#pSweep', { opacity: 0, xPercent: -60 }, { opacity: 1, xPercent: 60, duration: 1.4, ease: 'power2.inOut' }, 1.5)
+      .to('#pSweep', { opacity: 0, duration: 0.4 }, 2.6)
+      .fromTo('#pLeft', { y: 16 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, 2.0)
+      .fromTo('#pLeftNum', { scale: 1.9, filter: 'blur(6px)' }, { scale: 1, filter: 'blur(0px)', duration: 0.9, ease: 'back.out(2.2)' }, 2.15)
+      .add(() => { sfx.seat(2); haptic(12); }, 2.25)
+      .to('#pRule', { scaleX: 1, duration: 1.0, ease: 'power3.inOut' }, 2.7)
+      .set('#pMsg', { opacity: 1 }, 2.9)
+      .to(promoWords, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, stagger: 0.045, ease: 'power3.out' }, 2.9)
+      .fromTo('#pAct > *', { y: 22 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out' }, 3.9);
+
+    const next = () => {
+      $('pNext').removeEventListener('click', next);
+      sfx.init(); sfx.tap(); haptic(10);
+      tl.progress(1);
+      $('stage').style.visibility = 'visible'; if (vault) vault.resume();
+      gsap.timeline({ onComplete: () => { v.pause(); $('promoVideoBg').pause(); $('promo').hidden = true; resolve(); } })
+        .to(['.pcopy', '#pBrand'], { opacity: 0, y: -18, filter: 'blur(8px)', duration: 0.5, ease: 'power2.in' }, 0)
+        .to('#promo', { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, 0.25)
+        .to(v, { volume: 0, duration: 0.8 }, 0);
+    };
+    $('pNext').addEventListener('click', next);
+  });
+}
+$('pInsta').addEventListener('click', () => track('instagram_click'));
 
 /* =================================================================
    SCENE 08: grand finale
@@ -424,20 +507,26 @@ function warmVideo() {
     const p = v.play(); if (p && p.then) p.then(() => { v.pause(); v.currentTime = 0; }).catch(() => {});  // unlocks sound on iOS (user gesture)
   } catch (e) { /* ignore */ }
 }
-function playVideo() {
-  const v = $('finalVideo'); warmVideo();
-  if (wide()) { const b = $('finalVideoBg'); b.src = v.currentSrc || 'TAMUR_video_GitHub.mp4'; b.muted = true; b.play().catch(() => {}); }
+function playWithSound(v, tipId, bgId) {
+  if (wide() && bgId) { const b = $(bgId); b.src = v.currentSrc || v.src || 'TAMUR_video_GitHub.mp4'; b.muted = true; b.play().catch(() => {}); }
   v.muted = false; v.volume = 0.8;
   const p = v.play();
   const fallback = () => {
     v.muted = true; v.play().catch(() => {});
-    const tip = $('tapSound'); tip.classList.add('show');
+    const tip = $(tipId); tip.classList.add('show');
     const un = () => { v.muted = false; v.play().catch(() => {}); tip.classList.remove('show'); };
     document.addEventListener('pointerdown', un, { once: true });
     setTimeout(() => tip.classList.remove('show'), 6000);
   };
   if (p && p.catch) p.catch(fallback);
 }
+function playVideo() {
+  const v = $('finalVideo'); warmVideo();
+  const pv = $('promoVideo');                       // continue the film where the promo scene left it
+  if (pv.currentTime > 1) { try { v.currentTime = pv.currentTime; } catch (e) { /* not seekable yet */ } }
+  playWithSound(v, 'tapSound', 'finalVideoBg');
+}
+
 async function toFinale() {
   phase = 'finale';
   ctrl.visible = false;

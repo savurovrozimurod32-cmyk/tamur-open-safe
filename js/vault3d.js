@@ -386,6 +386,7 @@ export async function createVault(canvas, opts = {}) {
   /* ---------- camera rig & framing ---------- */
   const rig = { dist: 40, tx: 0, ty: 0, tz: 0, az: 22 * DEG, el: 9 * DEG };
   let sway = 0;                 // idle camera breathing amount (0..1)
+  let swayTween = null, revealTl = null;
   let stateName = 'far';
   let W = 1, H = 1;
 
@@ -511,7 +512,7 @@ export async function createVault(canvas, opts = {}) {
 
     /* SCENE 01–02: camera dolly from the dark, lights rise, 15° orbit, light sweep */
     reveal() {
-      const tl = gsap.timeline();
+      const tl = gsap.timeline(); revealTl = tl;
       const f = framing('intro');
       tl.set(rig, { ...framing('far') });
       if (reduced) {
@@ -535,13 +536,16 @@ export async function createVault(canvas, opts = {}) {
         .to(sweep, { intensity: 0, duration: 0.6, ease: 'power1.in' }, 2.8)
         .add(() => {
           stateName = 'intro';
-          const s = { v: 0 }; gsap.to(s, { v: 1, duration: 2, onUpdate: () => { sway = s.v; } });
+          const s = { v: 0 }; swayTween = gsap.to(s, { v: 1, duration: 2, onUpdate: () => { sway = s.v; } });
         }, 3.4);
       return tl;
     },
 
     /* SCENE 03: push in to the lock, open shutters, wake the drums one by one (120 ms apart) */
     activate() {
+      // finish the reveal (lights fully on) and stop the idle sway for good, even if the player tapped early
+      if (revealTl) { revealTl.progress(1); revealTl = null; }
+      if (swayTween) { swayTween.kill(); swayTween = null; }
       const tl = gsap.timeline();
       const sw = { v: sway }; tl.to(sw, { v: 0, duration: 0.4, onUpdate: () => { sway = sw.v; } }, 0);
       camTo(tl, 'game', 1.1, 'power3.inOut', 0);

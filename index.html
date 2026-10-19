@@ -156,6 +156,36 @@ h1 .sp{display:inline-block;width:.28em}
   text-transform:uppercase;padding:9px 16px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid var(--hair);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
 #tapSound.show{opacity:.9}
 
+/* ---------- promo: cinematic video scene after the first attempt ---------- */
+#promo{position:fixed;inset:0;z-index:5;overflow:hidden;background:#000}
+#promoVideoBg{display:none;position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(38px) brightness(.45) saturate(1.15)}
+#promoVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.12);will-change:transform}
+.pshade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 26%,rgba(0,0,0,.35) 48%,rgba(0,0,0,.9) 78%,rgba(0,0,0,.96) 100%)}
+.psweep{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,236,200,.28) 50%,transparent 65%)}
+.pbrand{position:absolute;left:0;right:0;top:calc(var(--top) + 3.4vh);display:flex;justify-content:center}
+.pbrand .logo{width:clamp(96px,26vw,140px)}
+.pcopy{position:absolute;left:0;right:0;bottom:calc(var(--bot) + 4.6vh);padding:0 22px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.ptitle{margin:12px 0 0;font:500 clamp(30px,8.4vw,84px)/1 var(--serif);letter-spacing:.03em;text-transform:uppercase}
+.ptitle .line{display:block}
+.ptitle .ch{display:inline-block;background:var(--gold-grad);background-size:420% 100%;background-position:30% 0;-webkit-background-clip:text;background-clip:text;color:transparent;will-change:transform,opacity,filter}
+.ptitle .sp{display:inline-block;width:.26em}
+#promoTitle > .sp{display:none}
+.wd{display:inline-block;white-space:nowrap}
+.pleft{margin:16px 0 0;font:300 16px/1.4 var(--sans);color:#f4ecdd;display:flex;align-items:baseline;gap:8px;justify-content:center;flex-wrap:wrap}
+.pleft b{display:inline-block;font:600 34px/1 var(--serif);color:#fff2d4;text-shadow:0 0 22px rgba(240,210,150,.55)}
+.prule{width:84px;height:1px;margin:18px 0 16px;background:linear-gradient(90deg,transparent,var(--champagne),transparent);transform-origin:50% 50%}
+.pmsg{max-width:460px;margin:0;font:300 14.5px/1.7 var(--sans);color:#efe6d6;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+.pmsg .w{display:inline-block;white-space:pre}
+.pmsg .em{font-weight:500;color:var(--champagne-hi)}
+.pmsg .tag{font-weight:500;color:#fff3d8}
+.pact{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+button.link{cursor:pointer;font-family:var(--sans)}
+#promoTap{position:absolute;left:50%;top:calc(var(--top) + 14vh);transform:translateX(-50%);font:400 10px/1 var(--sans);letter-spacing:.3em;color:var(--champagne);
+  text-transform:uppercase;padding:9px 16px;border-radius:999px;background:rgba(0,0,0,.4);border:1px solid var(--hair);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
+#promoTap.show{opacity:.9}
+
 /* ---------- transitions & misc ---------- */
 #flash{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:0;
   background:radial-gradient(circle at 34% 50%,#fffaf0 0%,#f6e3bb 26%,#d8b57c 55%,#8c6a3c 82%,#2a1f10 100%)}
@@ -185,6 +215,14 @@ h1 .sp{display:inline-block;width:.28em}
   #phoneUI{align-items:center;justify-content:flex-start;padding-left:6.5vw}
   #finale .fcopy{bottom:calc(var(--bot) + 7vh)}
   /* portrait film on landscape screens: framed in the centre over a blurred copy of itself */
+  #promoVideoBg{display:block}
+  #promoVideo{object-fit:contain;object-position:76% 50%}
+  .pshade{background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.7) 34%,rgba(0,0,0,.1) 62%,rgba(0,0,0,0) 100%)}
+  .pbrand{left:6.5vw;right:auto;justify-content:flex-start;top:calc(var(--top) + 6vh)}
+  .pcopy{left:6.5vw;right:auto;top:50%;bottom:auto;transform:translateY(-44%);padding:0;max-width:40vw;align-items:flex-start;text-align:left}
+  .pleft,.pact{justify-content:flex-start}
+  .prule{transform-origin:0 50%;background:linear-gradient(90deg,var(--champagne),transparent)}
+  .ptitle{font-size:clamp(44px,4vw,76px)}
   #finalVideoBg{display:block}
   #finalVideo{object-fit:contain;filter:drop-shadow(0 30px 80px rgba(0,0,0,.6))}
 }
@@ -265,6 +303,28 @@ h1 .sp{display:inline-block;width:.28em}
       <a class="link" id="map" href="https://maps.app.goo.gl/CimVDXb1XPi7Q7X59" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.8a7.7 7.7 0 0 0-7.7 7.7c0 5.6 6.8 12.1 7.1 12.4a.85.85 0 0 0 1.2 0c.3-.3 7.1-6.8 7.1-12.4A7.7 7.7 0 0 0 12 1.8zm0 18.3c-1.9-2-5.9-6.7-5.9-10.6a5.9 5.9 0 1 1 11.8 0c0 3.9-4 8.6-5.9 10.6zM12 6.2a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6zm0 4.9a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2z"/></svg>
         Manzil</a>
+    </div>
+  </div>
+</section>
+
+<section id="promo" hidden aria-labelledby="promoTitle">
+  <video id="promoVideoBg" muted loop playsinline preload="none" aria-hidden="true"></video>
+  <video id="promoVideo" loop playsinline preload="none" poster="tamur-store.jpg"></video>
+  <div class="pshade"></div><div class="psweep" id="pSweep"></div>
+  <div class="pbrand" id="pBrand"><div class="logo-wrap"><div class="logo" role="img" aria-label="TAMUR"></div></div></div>
+  <div id="promoTap">Ovoz uchun ekranga teging</div>
+  <div class="pcopy">
+    <div class="kicker" id="pKicker">TAMUR · Open the Safe</div>
+    <h2 class="ptitle" id="promoTitle" aria-label="Birinchi urinish qabul qilindi!"><span class="line">Birinchi urinish</span> <span class="line">qabul qilindi!</span></h2>
+    <p class="pleft" id="pLeft"><span>Sizda yana</span><b id="pLeftNum">2</b><span>ta imkoniyat bor.</span></p>
+    <div class="prule" id="pRule"></div>
+    <p class="pmsg" id="pMsg"><span class="em">Imkoniyatingizni oshiring</span> — <span class="tag">TAMUR (@tamur_terakzor)</span> sahifasiga obuna bo‘ling va bizni kuzatishda davom eting!</p>
+    <div class="pact" id="pAct">
+      <a class="link primary" id="pInsta" href="https://www.instagram.com/tamur_terakzor/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1C2.6 9.9 2.6 10.3 2.6 12s0 2.1.1 3.3c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4C15.5 4 15.1 4 12 4zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.2-8.3a1.15 1.15 0 1 1-2.3 0 1.15 1.15 0 0 1 2.3 0z"/></svg>
+        Obuna bo‘lish</a>
+      <button class="link" id="pNext" type="button">Davom etish
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
   </div>
 </section>
