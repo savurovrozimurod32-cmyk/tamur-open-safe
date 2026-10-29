@@ -354,7 +354,7 @@ async function onSubmit() {
   busy = true; sfx.init(); sfx.tap(); haptic(12);
   $('sendBtn').disabled = true;
   const code = vault.digits().join('');
-  track('code_attempt');
+  // code_attempt is recorded by the server after a successful insert.
   hideGameUI();
   phase = 'submitting';
 
@@ -372,7 +372,7 @@ async function onSubmit() {
   let next;
   if (testMode) { count = Math.min(3, count + 1); next = count === 1 ? 'phone' : count >= 3 ? 'finale' : 'game'; }
   else { count = typeof res.attempts === 'number' ? res.attempts : count + 1; next = res.needsPhone ? 'phone' : res.finished ? 'finale' : 'game'; }
-  if (next === 'finale') track('attempts_exhausted');
+  // attempts_exhausted is recorded by the server after the third successful insert.
 
   const tlB = vault.submitB();
   gsap.to('#flash', { opacity: 1, duration: 0.5, ease: 'power2.in', delay: reduced ? 0 : 0.6 });
