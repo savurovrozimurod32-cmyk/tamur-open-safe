@@ -1,0 +1,11 @@
+.git
+.github
+.gitignore
+Dockerfile
+nginx.conf
+.dockerignore
+README.md
+VPS-DEPLOY.md
+*.log
+.env
+.env.*
